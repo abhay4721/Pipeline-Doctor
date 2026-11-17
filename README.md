@@ -2,6 +2,27 @@
 
 Pipeline Doctor collects GitHub Actions run metadata, retrieves failed job logs, and keeps a searchable analysis with the log lines that support it. It runs locally with PostgreSQL and rule-based analysis; OpenAI and Ollama are optional providers.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/overview.jpg" alt="Pipeline Doctor overview dashboard" width="800"></td>
+    <td><img src="docs/screenshots/run-history.jpg" alt="Pipeline Doctor run history" width="800"></td>
+  </tr>
+  <tr>
+    <td align="center">Overview dashboard</td>
+    <td align="center">Run history</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/successful-run.jpg" alt="Details for a successful workflow run" width="800"></td>
+    <td><img src="docs/screenshots/failed-run-analysis.jpg" alt="Failure analysis with suggested checks and log evidence" width="800"></td>
+  </tr>
+  <tr>
+    <td align="center">Successful workflow run</td>
+    <td align="center">Failure analysis and log evidence</td>
+  </tr>
+</table>
+
 ## Run with Docker Compose
 
 Requirements: Docker Engine with Compose, a GitHub fine-grained token with Actions read access to the repositories you want to monitor, and the repository clone.
