@@ -33,12 +33,14 @@ To stop the app, run `docker compose down`. Add `-v` only if you intend to delet
 
 ## Connect GitHub Actions
 
-Copy `.github/workflows/report-failure.yml` into the repository to monitor. Change the workflow name in its `workflows` list to match the CI workflow. Add these repository secrets:
+This repository includes a `CI` workflow and a Pipeline Doctor reporter. The CI workflow runs on pushes and pull requests. It also has a manual `simulate_failure` input for testing the reporter. Add these repository secrets:
 
 - `PIPELINE_DOCTOR_API`: public HTTPS base URL for the service.
 - `PIPELINE_DOCTOR_TOKEN`: the same value as the server's `API_TOKEN`.
 
-The reporter submits the repository and run ID. The backend fetches the run, jobs, and failed logs through the GitHub API. The server token must have Actions read access for each monitored repository. The reporter workflow must be present on the default branch for GitHub's `workflow_run` event to trigger it.
+The API server's `.env` must also have a real `GITHUB_TOKEN` with Actions read access to this repository. After both workflows are on the default branch, push a commit to run a passing CI check. To test a failure, open **Actions → CI → Run workflow**, enable `simulate_failure`, and start the workflow. The reporter runs after the failed CI workflow and submits its run ID.
+
+The reporter submits the repository and run ID. The backend fetches the run, jobs, and failed logs through the GitHub API. GitHub-hosted runners need a publicly reachable HTTPS `PIPELINE_DOCTOR_API` URL; they cannot reach your computer's `localhost`. The server token must have Actions read access for each monitored repository. The reporter workflow must be present on the default branch for GitHub's `workflow_run` event to trigger it.
 
 For direct GitHub webhooks, set the target to `https://your-host/api/v1/webhooks/github`, subscribe to `workflow_run`, and set the GitHub webhook secret to the same value as `GITHUB_WEBHOOK_SECRET`. The endpoint verifies the HMAC signature and delivery ID. Logs still come from the GitHub API.
 
