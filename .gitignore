@@ -7,3 +7,4 @@ node_modules/
 dist/
 *.py[cod]
 *.tsbuildinfo
+/actions-demo/
