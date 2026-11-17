@@ -1,0 +1,27 @@
+name: Pipeline Doctor Reporter
+
+on:
+  workflow_run:
+    workflows: ["CI"] # Update to the workflow name you want to monitor.
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Submit failed run for analysis
+        env:
+          API_URL: ${{ secrets.PIPELINE_DOCTOR_API }}
+          API_TOKEN: ${{ secrets.PIPELINE_DOCTOR_TOKEN }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          curl --fail-with-body --silent --show-error --retry 3 \
+            -X POST "$API_URL/api/v1/reports/run" \
+            -H "Authorization: Bearer $API_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"repository\":\"$REPOSITORY\",\"run_id\":$RUN_ID}"
