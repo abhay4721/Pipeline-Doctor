@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import BigInteger, JSON, DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -32,7 +32,8 @@ class WorkflowRun(Base):
     __table_args__ = (UniqueConstraint("repository_id", "run_id", name="uq_repository_run"), Index("ix_run_created", "created_at"))
     id: Mapped[int] = mapped_column(primary_key=True)
     repository_id: Mapped[int] = mapped_column(ForeignKey("repositories.id", ondelete="CASCADE"), index=True)
-    run_id: Mapped[int] = mapped_column(Integer)
+    # GitHub Actions run IDs exceed PostgreSQL's signed 32 bit INTEGER range.
+    run_id: Mapped[int] = mapped_column(BigInteger)
     workflow_name: Mapped[str] = mapped_column(String(255), default="Workflow")
     branch: Mapped[str] = mapped_column(String(255), default="")
     commit_sha: Mapped[str] = mapped_column(String(64), default="")
