@@ -7,7 +7,8 @@ import httpx
 from app.core.config import get_settings
 
 SECRET_PATTERNS = [
-    re.compile(r"(?i)(token|password|secret|api[_-]?key|authorization)(\s*[:=]\s*)([^\s,;]+)"),
+    re.compile(r"(?im)^.*authorization\s*[:=].*$"),
+    re.compile(r"(?i)(token|password|secret|api[_-]?key)(\s*[:=]\s*)([^\s,;]+)"),
     re.compile(r"gh[pousr]_[A-Za-z0-9_]{20,}"),
     re.compile(r"github_pat_[A-Za-z0-9_]{20,}"),
     re.compile(r"AKIA[0-9A-Z]{16}"),

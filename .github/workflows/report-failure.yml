@@ -20,6 +20,19 @@ jobs:
           RUN_ID: ${{ github.event.workflow_run.id }}
           REPOSITORY: ${{ github.repository }}
         run: |
+          if [ -z "${API_URL:-}" ]; then
+            echo "::error::Set the PIPELINE_DOCTOR_API repository secret to a public HTTPS base URL."
+            exit 1
+          fi
+          case "$API_URL" in
+            https://*) ;;
+            *) echo "::error::PIPELINE_DOCTOR_API must start with https://"; exit 1 ;;
+          esac
+          if [ -z "${API_TOKEN:-}" ]; then
+            echo "::error::Set the PIPELINE_DOCTOR_TOKEN repository secret to the server API_TOKEN."
+            exit 1
+          fi
+          API_URL="${API_URL%/}"
           curl --fail-with-body --silent --show-error --retry 3 \
             -X POST "$API_URL/api/v1/reports/run" \
             -H "Authorization: Bearer $API_TOKEN" \
